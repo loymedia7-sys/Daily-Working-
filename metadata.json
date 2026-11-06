@@ -1,0 +1,6 @@
+{
+  "name": "DailyWork — Activity & Photo Reporting",
+  "description": "Mobile-first bilingual (Khmer & English) daily work activity, photo evidence, and A4 PDF reporting system for employees, managers, and teams.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

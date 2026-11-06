@@ -1,0 +1,407 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Work directory profile for an employee, manager, or admin (PII-free).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the user."
+        },
+        "fullName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Display full name of the employee or manager."
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Avatar URL from Google profile."
+        },
+        "position": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Job title or position."
+        },
+        "department": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Department name."
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 20,
+          "enum": ["employee", "manager", "admin"],
+          "description": "System access role."
+        },
+        "managerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "UID of the assigned manager."
+        },
+        "managerName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Display name of the assigned manager."
+        },
+        "language": {
+          "type": "string",
+          "maxLength": 10,
+          "enum": ["en", "km"],
+          "description": "Preferred UI language."
+        },
+        "companyName": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Organization or company name shown on PDF reports."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "uid",
+        "fullName",
+        "photoURL",
+        "position",
+        "department",
+        "role",
+        "managerId",
+        "managerName",
+        "language",
+        "companyName",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserPrivate": {
+      "title": "UserPrivate",
+      "description": "Isolated PII storage for a user (email address).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 150,
+          "description": "User email address."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      },
+      "required": ["uid", "email", "createdAt", "updatedAt"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "A recorded daily work activity with photo evidence and notes.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the employee who recorded the activity."
+        },
+        "userName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Employee full name."
+        },
+        "userDepartment": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Employee department."
+        },
+        "managerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Assigned manager UID for team visibility."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Activity title."
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "description": "Work category (e.g., Graphic Design, Meeting, Marketing, Field Work)."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Detailed description of the work performed."
+        },
+        "result": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Completed output or deliverable summary."
+        },
+        "startTime": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Activity start time (e.g., 08:00)."
+        },
+        "endTime": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "Activity end time (e.g., 09:30)."
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 30,
+          "enum": ["in_progress", "completed"],
+          "description": "Current status of the activity."
+        },
+        "photos": {
+          "type": "array",
+          "maxLength": 5,
+          "description": "List of uploaded photo URLs or compressed data URIs (max 5)."
+        },
+        "workDate": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 20,
+          "description": "ISO date string YYYY-MM-DD."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "userName",
+        "userDepartment",
+        "managerId",
+        "title",
+        "category",
+        "description",
+        "result",
+        "startTime",
+        "endTime",
+        "status",
+        "photos",
+        "workDate",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "DailyReport": {
+      "title": "DailyReport",
+      "description": "Daily work report aggregating an employee's activities for manager review and PDF export.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Employee UID."
+        },
+        "userName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Employee full name."
+        },
+        "userPosition": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Employee position."
+        },
+        "userDepartment": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Employee department."
+        },
+        "managerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Assigned manager UID."
+        },
+        "managerName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Assigned manager display name."
+        },
+        "workDate": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 20,
+          "description": "Report date YYYY-MM-DD."
+        },
+        "activityIds": {
+          "type": "array",
+          "maxLength": 50,
+          "description": "List of activity document IDs included in the report."
+        },
+        "totalActivities": {
+          "type": "number",
+          "description": "Total number of activities."
+        },
+        "totalPhotos": {
+          "type": "number",
+          "description": "Total number of attached photos."
+        },
+        "workingHours": {
+          "type": "number",
+          "description": "Total logged working hours for the day."
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Daily summary notes written by the employee."
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 30,
+          "enum": ["draft", "submitted", "approved", "revision_requested"],
+          "description": "Report approval workflow status."
+        },
+        "managerComment": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Feedback or approval notes from the manager."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "userName",
+        "userPosition",
+        "userDepartment",
+        "managerId",
+        "managerName",
+        "workDate",
+        "activityIds",
+        "totalActivities",
+        "totalPhotos",
+        "workingHours",
+        "summary",
+        "status",
+        "managerComment",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Department": {
+      "title": "Department",
+      "description": "Company department managed by admins.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Department English name."
+        },
+        "nameKm": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Department Khmer name."
+        },
+        "managerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Default manager UID for this department."
+        },
+        "managerName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Default manager name for this department."
+        },
+        "createdBy": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Admin UID who created the department."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "name",
+        "nameKm",
+        "managerId",
+        "managerName",
+        "createdBy",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Public work profile directory (PII-free)."
+    },
+    "/userPrivate/{userId}": {
+      "schema": { "$ref": "#/entities/UserPrivate" },
+      "description": "Strictly isolated PII document containing the user's email."
+    },
+    "/activities/{activityId}": {
+      "schema": { "$ref": "#/entities/Activity" },
+      "description": "Employee daily work activity records and photo URLs."
+    },
+    "/dailyReports/{reportId}": {
+      "schema": { "$ref": "#/entities/DailyReport" },
+      "description": "Daily work reports submitted by employees for manager review."
+    },
+    "/departments/{departmentId}": {
+      "schema": { "$ref": "#/entities/Department" },
+      "description": "Organizational departments and assigned managers."
+    }
+  }
+}

@@ -1,0 +1,996 @@
+Absolutely! I think this is a very useful software idea, especially for your daily work. Instead of taking pictures, writing notes separately, and preparing a report manually every day, you can build one simple web-based Daily Work Activity Report System.
+
+My recommendation is to build it as a Mobile-First Web Application (PWA).
+
+This means:
+
+- You don't need to build an Android or iOS application.
+- You can open it using Chrome, Safari, or any mobile browser.
+- You can add it to your mobile home screen like an app.
+- You can take photos directly using your phone camera.
+- You can write notes about every activity.
+- You can generate a professional PDF report with photos included.
+- Your friends and coworkers can sign in with their own Google accounts.
+- Managers can review employee reports.
+
+Let's design the complete system structure before starting development.
+
+# 1. Project concept
+
+Recommended project
+
+Web application / PWA
+
+# DailyWork
+
+Daily Work Activity & Photo Reporting System
+
+[Worksy - Smart HR & Team Productivity Mobile App UI Design by LAIN UI/UX for LAIN DESIGN AGENCY on Dribbble](https://images.openai.com/static-rsc-4/j-W_QZY-HTgB0WrEXDqoMT9mawWvXQGqhCBv_B2jKJdiZec9iQISlb3z4zATGE_inWHnDtprqOysAoBGTPRjPdeDMDOSQVVvrjoso57kLPOQjiLvO_AfJzmgaPP9fSsd-SvdhHfXXChjQh6g8gShAVd07toVcMMi6Jr8xtjsx-Y?purpose=inline)
+
+[dribbble.com](https://dribbble.com/shots/26675010-Worksy-Smart-HR-Team-Productivity-Mobile-App-UI-Design?utm_source=chatgpt.com)
+
+Photo Activity
+
+Capture work evidence
+
+Work Notes
+
+Record what you do
+
+PDF Reports
+
+Download reports with photos
+
+Team Management
+
+Employee and manager accounts
+
+# 2. Technology stack
+
+You mentioned Firebase and Cloudinary. I recommend keeping those as the main backend services.
+
+| Technology              | Purpose                                |
+| ----------------------- | -------------------------------------- |
+| React + Vite            | Build the web interface                |
+| Tailwind CSS            | Responsive design                      |
+| Firebase Authentication | Google sign-in                         |
+| Cloud Firestore         | Save users, notes and reports          |
+| Cloudinary              | Store activity photos                  |
+| Firebase Storage        | Optional storage for generated PDFs    |
+| jsPDF                   | Generate downloadable PDF reports      |
+| PWA                     | Make the website installable on mobile |
+| Firebase Hosting        | Publish the website                    |
+
+System architecture
+
+Mobile / Desktop Browser
+
+React + Vite + Tailwind + PWA
+
+Firebase Authentication
+
+Google account sign-in and identity
+
+Firestore
+
+Users, activities, reports
+
+Cloudinary
+
+Activity photos
+
+PDF Report Generator
+
+Activity notes + photos + signatures
+
+# 3. User roles and account system
+
+I recommend three account roles.
+
+1\. Employee
+
+Daily user
+
+Create activities, take photos, write notes, submit daily reports and view personal history.
+
+2\. Manager
+
+Report reviewer
+
+View team reports, review photos, approve or request corrections, and download PDF reports.
+
+3\. Admin
+
+System owner
+
+Manage employees, roles, departments, managers, settings and the entire system.
+
+### Google sign-in workflow
+
+1. Employee opens the website.
+2. Clicks Continue with Google.
+3. Firebase authenticates their Google account.
+4. First-time user creates their work profile.
+5. User enters their display name, position and department.
+6. Admin assigns the employee to a manager.
+7. User can start recording daily activities.
+
+Important: Let employees enter their own names and positions, but don't let them assign themselves the Admin or Manager role. Only an authorized admin should control permissions.
+
+### Profile fields
+
+| Field         | Example          |
+| ------------- | ---------------- |
+| Full name     | Loy Media        |
+| Email         | Google email     |
+| Position      | Graphic Designer |
+| Department    | Marketing        |
+| Manager name  | Mr. Dara         |
+| Role          | Employee         |
+| Profile photo | Google profile   |
+| Language      | Khmer / English  |
+
+# 4. Main application pages
+
+I recommend seven main sections.
+
+Mobile dashboard concept
+
+Employee view
+
+Good morning, Loy!
+
+Graphic Designer · Marketing
+
+TODAY'S WORK ACTIVITY
+
+# 06 Nov 2026
+
+# 05
+
+Activities
+
+# 12
+
+Photos
+
+Record new activity
+
+Capture a photo and describe what you are doing.
+
+\+ Add New Activity
+
+Home
+
+Activity
+
+Reports
+
+Illustrative interface concept, not a connected application.
+
+### Page 1 — Dashboard
+
+Show:
+
+- Today's date.
+- Employee name and position.
+- Number of activities today.
+- Number of photos taken.
+- Total completed activities.
+- Pending report status.
+- Quick Add Activity button.
+- Recent activities.
+
+### Page 2 — Add activity (most important feature)
+
+This is the feature you will use throughout your working day.
+
+[Handoff Daily Logs | AI-Powered Daily Logs](https://images.openai.com/static-rsc-4/xr9S97OHPrXXZpOt2RBcuLhChFHhe_3_Ct4Stua0DocdHUP-NYb-jeLsVqrg_zOdUTU6jvYwxfgFxAl8JuCDpk6K7Et3-pGN33D15ddrpUfKcKpN0dkoPyKCwd_jSF8xKkMjBucC24XaeW0XUqJo2InGgbGb3vFPtxtzWyScih4?purpose=inline)
+
+[handoff.ai](https://www.handoff.ai/daily-logs?utm_source=chatgpt.com)
+
+Recommended form:
+
+| Field            | Function                         |
+| ---------------- | -------------------------------- |
+| Activity title   | What are you doing?              |
+| Category         | Design, Meeting, Marketing, etc. |
+| Start time       | Automatic current time           |
+| End time         | Optional                         |
+| Camera           | Take a new photo                 |
+| Gallery          | Select existing photos           |
+| Work description | Explain your work                |
+| Result           | What did you finish?             |
+| Status           | In progress / Completed          |
+
+Example of your daily work:
+
+Activity #01
+
+Completed
+
+[Agricultural Graphic Designer | AgroBH](https://images.openai.com/static-rsc-4/0brLnzPpAvhzvTwP6McibViV1zRj-8jhE6cTUOWoz1bj09rGYKXQCMTVtN98E10c-yM7djLC8nGvzTILzPYGf4kYIplvRAMIrUQ_gD1NVY4Fvsq4FLYHsDWCNv6hmiis0PptYbauGKWu_3Fu3NG8AFXaNvrVz6O77XWbNYVnJ6w?purpose=inline)
+
+[agro.bh](https://www.agro.bh/ar/agrocareers/arts-literature-pathway/agricultural-graphic-designer?utm_source=chatgpt.com)
+
+Activity: Design Agriculture Product Poster
+
+Time: 08:00 AM – 09:30 AM
+
+Category: Graphic Design
+
+Description: Designed a promotional poster for an agriculture tractor product. Prepared the background, product image and Khmer promotional text.
+
+Result: Completed first poster design.
+
+You should allow users to add multiple photos to one activity, not just one photo.
+
+### Page 3 — Activity timeline
+
+Show all activities in chronological order.
+
+- 08:00 AM — Poster design.
+- 09:30 AM — Product research.
+- 10:30 AM — Social media content.
+- 01:00 PM — Meeting.
+- 03:00 PM — Video editing.
+
+Users can edit activities before submission.
+
+### Page 4 — Daily reports
+
+Features:
+
+- Select date.
+- View all activities.
+- View all attached photos.
+- Generate PDF.
+- Download PDF.
+- Submit to manager.
+- See approval status.
+
+### Page 5 — Report history
+
+Users can find previous reports by date, month and year.
+
+### Page 6 — Manager dashboard
+
+Managers can:
+
+- View employees under their supervision.
+- See who has submitted reports.
+- Open individual reports.
+- View attached photographs.
+- Download PDFs.
+- Approve reports.
+- Request corrections with comments.
+
+### Page 7 — Settings
+
+- Change profile name.
+- Change position.
+- Select department.
+- Set manager name.
+- Switch Khmer / English.
+- Change password/account settings through Google.
+- Sign out.
+
+# 5. Khmer and English language system
+
+I recommend making the application bilingual from the beginning.
+
+Example:
+
+| English       | Khmer             |
+| ------------- | ----------------- |
+| Dashboard     | ផ្ទាំងគ្រប់គ្រង   |
+| Add Activity  | បន្ថែមសកម្មភាព    |
+| Take Photo    | ថតរូប             |
+| Description   | ការពិពណ៌នា        |
+| Work Report   | របាយការណ៍ការងារ   |
+| Submit Report | ដាក់ស្នើរបាយការណ៍ |
+| Approved      | បានអនុម័ត         |
+| Pending       | កំពុងរង់ចាំ       |
+| Completed     | បានបញ្ចប់         |
+| Manager       | អ្នកគ្រប់គ្រង     |
+
+Use a language switcher in the header:
+
+Application language
+
+English
+
+ខ្មែរ
+
+For development, use `i18next` with separate `en.json` and `km.json` translation files. Use a Khmer-compatible font such as Noto Sans Khmer.
+
+# 6. Database structure — Firebase Firestore
+
+This is an important part. Your database must be organized so that many employees can use the same system without seeing each other's private reports.
+
+I recommend this structure:
+
+```
+dailywork/
+│
+├── users/
+│   └── {uid}
+│       ├── fullName
+│       ├── email
+│       ├── photoURL
+│       ├── position
+│       ├── department
+│       ├── role
+│       ├── managerId
+│       ├── managerName
+│       ├── language
+│       └── createdAt
+│
+├── activities/
+│   └── {activityId}
+│       ├── userId
+│       ├── title
+│       ├── category
+│       ├── description
+│       ├── result
+│       ├── startTime
+│       ├── endTime
+│       ├── status
+│       ├── photos[]
+│       ├── workDate
+│       └── createdAt
+│
+├── dailyReports/
+│   └── {reportId}
+│       ├── userId
+│       ├── managerId
+│       ├── workDate
+│       ├── activityIds[]
+│       ├── totalActivities
+│       ├── totalPhotos
+│       ├── summary
+│       ├── pdfURL
+│       ├── status
+│       ├── managerComment
+│       ├── submittedAt
+│       └── reviewedAt
+│
+└── departments/
+    └── {departmentId}
+        ├── name
+        └── managerId
+```
+
+Important database decisions:
+
+- Use Firebase UID as the user's unique identity.
+- Save photo URLs and Cloudinary asset IDs in Firestore, not the actual image files.
+- Store timestamps as Firestore timestamps.
+- Keep one daily report per employee per working date.
+- Link reports to activity IDs.
+- Use a report status such as `draft`, `submitted`, `approved`, or `revision_requested`.
+
+# 7. Cloudinary image storage
+
+[Using DAM to Run Multichannel Social Media Asset Experiments](https://images.openai.com/static-rsc-4/mMx54QCGg8ePUGwZPOs9uUZ-AFcP6oDrw1pJF8MtO3Zrri2IGOYwt8A_GcBtZmGZiS9TKCO_l4o7keL4sVgJ5ac3XoljNoMENrn9caT1Chr1XMzkKOn9s7vg8jhoIPXCcGye1DaH1e-OcEXRYoKHXDiVUM7BkC7g0aIcWwXyj1w?purpose=inline)
+
+[cloudinary.com](https://cloudinary.com/blog/dam-multichannel-social-media-asset-experiments?utm_source=chatgpt.com)
+
+Your image workflow should be:
+
+1. User opens Add Activity.
+2. Clicks Take Photo.
+3. Browser opens the phone camera.
+4. User takes a picture.
+5. Image preview appears.
+6. User writes a note.
+7. User clicks Save Activity.
+8. Photo uploads to Cloudinary.
+9. Cloudinary returns an image URL and asset ID.
+10. Firestore saves the activity and image details.
+
+Recommended Cloudinary folder structure:
+
+```
+dailywork/
+│
+├── employees/
+│   ├── user_001/
+│   │   ├── 2026-11-06/
+│   │   │   ├── activity_001.jpg
+│   │   │   └── activity_002.jpg
+│   │
+│   └── user_002/
+│       └── 2026-11-06/
+│           └── activity_001.jpg
+```
+
+My security recommendation: Use signed uploads generated through a trusted backend such as Firebase Cloud Functions. Never expose your Cloudinary API secret in frontend code. An unsigned upload preset is easier to start with, but it can be abused by anyone who obtains the preset name, so it needs strict restrictions.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://cloudinary.com\&sz=32)
+
+Documentation+1
+
+
+
+# 8. PDF report generation — the most important output
+
+This is the feature that will make the system useful to your manager.
+
+I recommend a professional A4 PDF report, with photos and notes included inside the document.
+
+PDF REPORT PREVIEW
+
+A4 document
+
+# DAILY WORK REPORT
+
+របាយការណ៍ការងារប្រចាំថ្ងៃ
+
+06 November 2026
+
+EMPLOYEE
+
+Loy Media
+
+POSITION
+
+Graphic Designer
+
+DEPARTMENT
+
+Marketing
+
+MANAGER
+
+Mr. Dara
+
+01\. Agriculture Poster Design
+
+08:00 AM – 09:30 AM
+
+[Como Fazer um Infográfico em 5 Passos para Marketing Agro de Alto Impacto](https://images.openai.com/static-rsc-4/_YtPUUpp5VdwA5jFuwvEsFWhuP7GbJtGi88SlRsYMzVkTq_PUQ5kRdtZ_Abow6Z5ZxxFkM_WHW8ppI5i664mKWcsSSA2YTPxp-iX7SoQn0BDNCsfTOog_n9nGzppWOZ6IyYQ8KtbyX4to1uI4mRTil4pSOrVGhkaj4J9jDtdBFk?purpose=inline)
+
+[chasocial.com.br](https://chasocial.com.br/como-fazer-um-infografico-em-5-passos/?utm_source=chatgpt.com)
+
+Designed a promotional agriculture machinery poster, including product image, background and Khmer text.
+
+02\. Product Research
+
+09:30 AM – 10:30 AM
+
+[CLAAS Introduces Two New Precision Farming Technologies | Farm And Plant Ireland Blog](https://images.openai.com/static-rsc-4/dWAn2SbZJsP1YO6V8mvylrErtZelIgQW-qq349FN3B6erlLQ-FrpeeJGXHLL8Y9HYTElKb-0F2VZNbIucFeBRs0NZYTPg9P_--qcAoLol-tDUNziGae1nIJc_hjXwSVaeZJzZhOlw4VLaP3QD7E0Kv0ks8qNoAx5KA6gcQFz4aQ?purpose=inline)
+
+[farmandplant.ie](https://www.farmandplant.ie/blog/ag-equipment-news/2019/03/claas-introduces-two-new-precision-farming-technologies?utm_source=chatgpt.com)
+
+Researched product information and prepared content for the next marketing design.
+
+Daily Summary
+
+Total Activities: 5
+
+Total Photos: 12
+
+Working Hours: 8 hours
+
+EMPLOYEE SIGNATURE
+
+
+
+
+
+MANAGER APPROVAL
+
+
+
+
+
+Example report layout. The actual PDF will contain the employee's uploaded activity photos.
+
+### PDF contents
+
+1. Company logo and company name.
+2. Daily report title.
+3. Employee name and position.
+4. Department and manager name.
+5. Report date.
+6. Activity title and time.
+7. Activity description.
+8. Actual activity photographs.
+9. Work results.
+10. Daily summary.
+11. Employee signature area.
+12. Manager approval and comments.
+
+### PDF technical implementation
+
+Use:
+
+- `jsPDF` to create the PDF.
+- `jspdf-autotable` for structured information tables.
+- Cloudinary image URLs to retrieve the actual images.
+- A Khmer-compatible font embedded in the PDF.
+
+Important: Don't just put image URLs inside the PDF. You must load the actual image data and embed each photo into the PDF document. Otherwise, your manager might receive a PDF that only contains links.
+
+For larger reports, automatically create additional pages when necessary. Also handle image loading errors and wait until every photo is loaded before exporting.
+
+I recommend including a Download PDF button and a Preview PDF button.
+
+# 9. Security and permissions
+
+Because your coworkers will use this system, security is essential.
+
+| Action            | Employee | Manager | Admin |
+| ----------------- | -------- | ------- | ----- |
+| Create activity   | Yes      | Yes     | Yes   |
+| Upload photos     | Yes      | Yes     | Yes   |
+| Edit own draft    | Yes      | Yes     | Yes   |
+| View own reports  | Yes      | Yes     | Yes   |
+| View team reports | No       | Yes     | Yes   |
+| Approve reports   | No       | Yes     | Yes   |
+| Manage employees  | No       | No      | Yes   |
+| Change user roles | No       | No      | Yes   |
+| Configure system  | No       | No      | Yes   |
+
+Set up Firestore Security Rules to enforce these permissions on the server side, not just by hiding buttons in the frontend.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://firebase.google.com\&sz=32)
+
+Firebase+1
+
+
+
+Also consider:
+
+- Only the employee who owns an activity can edit their draft.
+- Submitted reports should be locked against ordinary editing.
+- Managers can only review employees assigned to them.
+- Admin role assignment should be protected.
+- Validate image type and size.
+- Never trust user-supplied manager IDs or role values.
+
+# 10. Complete project folder structure
+
+Here is the structure I would use when developing the actual software.
+
+```
+dailywork-system/
+│
+├── public/
+│   ├── logo.png
+│   ├── icons/
+│   └── manifest.json
+│
+├── src/
+│   │
+│   ├── assets/
+│   │
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── LanguageSwitcher.jsx
+│   │   ├── CameraCapture.jsx
+│   │   ├── PhotoPreview.jsx
+│   │   ├── ActivityCard.jsx
+│   │   ├── ReportCard.jsx
+│   │   └── ProtectedRoute.jsx
+│   │
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── AddActivity.jsx
+│   │   ├── ActivityHistory.jsx
+│   │   ├── DailyReports.jsx
+│   │   ├── ReportDetails.jsx
+│   │   ├── ManagerDashboard.jsx
+│   │   ├── EmployeeManagement.jsx
+│   │   └── Settings.jsx
+│   │
+│   ├── services/
+│   │   ├── firebase.js
+│   │   ├── authService.js
+│   │   ├── activityService.js
+│   │   ├── reportService.js
+│   │   ├── cloudinaryService.js
+│   │   └── userService.js
+│   │
+│   ├── hooks/
+│   │   ├── useAuth.js
+│   │   └── useLanguage.js
+│   │
+│   ├── utils/
+│   │   ├── generatePDF.js
+│   │   ├── formatDate.js
+│   │   └── imageHelper.js
+│   │
+│   ├── locales/
+│   │   ├── en.json
+│   │   └── km.json
+│   │
+│   ├── styles/
+│   │   └── global.css
+│   │
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── functions/
+│   └── src/
+│       ├── cloudinarySignature.js
+│       └── reportFunctions.js
+│
+├── firestore.rules
+├── firestore.indexes.json
+├── firebase.json
+├── package.json
+└── vite.config.js
+```
+
+# 11. Development roadmap
+
+Don't try to build everything at once. Build in six stages.
+
+1. Stage 1 — Foundation and design
+   - Create React + Vite project.
+   - Design responsive mobile interface.
+   - Create dashboard.
+   - Add Khmer and English.
+   - Set up PWA installation.
+2. Stage 2 — Authentication and profiles
+   - Connect Firebase.
+   - Implement Google sign-in.
+   - Create user profiles.
+   - Add employee, manager and admin roles.
+   - Configure permissions.
+3. Stage 3 — Activity recording
+   - Build camera feature.
+   - Build image preview.
+   - Upload photos to Cloudinary.
+   - Save notes and descriptions.
+   - Build activity timeline.
+4. Stage 4 — PDF reporting
+   - Generate daily reports.
+   - Embed real photos.
+   - Add Khmer and English fonts.
+   - Create professional A4 layout.
+   - Download and preview PDF.
+5. Stage 5 — Manager system
+   - Team dashboard.
+   - Employee report list.
+   - Review and approve reports.
+   - Request corrections.
+   - Add manager comments.
+6. Stage 6 — Testing and deployment
+   - Test on Android and iPhone.
+   - Test on desktop.
+   - Test Google authentication.
+   - Test photo uploads.
+   - Test PDF generation.
+   - Deploy using Firebase Hosting.
+
+Firebase supports PWA-related capabilities, including HTTPS hosting, authentication and Firestore offline data access, which makes it a good fit for this project.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://firebase.google.com\&sz=32)
+
+Firebase
+
+
+
+# 12. Master prompt to build this software using AI
+
+You can use this prompt with Cursor, Claude Code, ChatGPT, or another AI coding assistant.
+
+I recommend building the system step by step, rather than asking AI to generate the entire application in one attempt.
+
+# PROJECT: DAILYWORK — DAILY WORK ACTIVITY REPORT SYSTEM
+
+## ROLE
+
+Act as a Senior Full-Stack Developer, UI/UX Designer, Firebase Engineer, and PWA Specialist.
+
+Build a complete, professional, mobile-first Daily Work Activity Reporting System.
+
+## PROJECT GOAL
+
+Create a web application that allows employees to record their daily work activities by taking photos, writing descriptions, tracking working times, and generating professional PDF reports containing the actual uploaded photographs.
+
+The PDF reports must be downloadable and shareable with managers.
+
+This must be a responsive web application, NOT a native Android or iOS application.
+
+## TECHNOLOGY STACK
+
+- React + Vite
+- JavaScript
+- Tailwind CSS
+- Firebase Authentication
+- Firebase Cloud Firestore
+- Firebase Cloud Functions
+- Cloudinary Image Storage
+- jsPDF
+- jspdf-autotable
+- i18next
+- PWA
+
+## USER ROLES
+
+1. Employee
+   - Google sign-in
+   - Create personal profile
+   - Record daily activities
+   - Take photos using mobile camera
+   - Upload multiple photos
+   - Write activity descriptions
+   - Generate daily PDF reports
+   - View personal report history
+   - Submit reports to managers
+2. Manager
+   - View assigned employees
+   - View employee activities
+   - Review daily reports
+   - View photos
+   - Approve reports
+   - Request corrections
+   - Download PDF reports
+3. Admin
+   - Manage all users
+   - Assign roles
+   - Manage departments
+   - Assign managers
+   - Configure application settings
+
+## MAIN FEATURES
+
+### 1. Authentication
+
+- Google authentication through Firebase.
+- First-time user profile setup.
+- Profile photo from Google.
+- Secure user sessions.
+- Role-based access control.
+
+### 2. Dashboard
+
+- Welcome message.
+- Current date.
+- Employee profile.
+- Daily activity counter.
+- Photo counter.
+- Recent activity timeline.
+- Quick Add Activity button.
+- Daily report status.
+
+### 3. Activity Recording
+
+- Activity title.
+- Activity category.
+- Automatic date and time.
+- Start and end time.
+- Mobile camera integration.
+- Gallery image selection.
+- Multiple photo uploads.
+- Image preview and deletion before saving.
+- Work description.
+- Work result.
+- Activity status.
+- Save as draft.
+
+### 4. Cloudinary Integration
+
+- Upload photos to Cloudinary.
+- Organize images by employee and date.
+- Store image URL and asset ID in Firestore.
+- Optimize image sizes.
+- Display image previews.
+- Secure upload using backend-generated signatures.
+- Never expose API secrets in frontend code.
+
+### 5. Daily PDF Report
+
+Generate professional A4 PDF reports.
+
+Include:
+
+- Company logo.
+- Company name.
+- Daily Work Report title.
+- Employee information.
+- Position and department.
+- Manager name.
+- Date.
+- Activity titles.
+- Working times.
+- Activity descriptions.
+- Actual embedded photographs.
+- Daily summary.
+- Employee signature.
+- Manager approval.
+- Manager comments.
+
+Support Khmer and English PDF generation.
+
+### 6. Manager Dashboard
+
+- Employee list.
+- Daily report overview.
+- Pending reports.
+- Approved reports.
+- Revision requests.
+- Employee activity details.
+- PDF download.
+- Review comments.
+
+### 7. Bilingual Support
+
+Support:
+
+- Khmer.
+- English.
+
+Create separate translation files.\
+Add a language switcher.\
+Remember the user's language preference.
+
+Use Noto Sans Khmer for Khmer text.
+
+### 8. PWA
+
+- Installable on mobile home screen.
+- Responsive mobile interface.
+- Offline draft support.
+- Online synchronization.
+- Camera access through mobile browser.
+- HTTPS deployment.
+
+### 9. Security
+
+- Firestore Security Rules.
+- Role-based authorization.
+- Employee data privacy.
+- Manager team-based access.
+- Admin-only role management.
+- Validate file types and sizes.
+- Protect submitted reports from unauthorized modification.
+
+## DESIGN REQUIREMENTS
+
+Create a modern, clean, professional SaaS interface.
+
+Design style:
+
+- Minimalist.
+- Professional dashboard.
+- Mobile-first.
+- White and light-gray backgrounds.
+- Navy and blue primary colors.
+- Rounded cards.
+- Clear typography.
+- Simple icons.
+- Easy navigation.
+- Large camera and activity buttons.
+
+Mobile navigation:
+
+- Home
+- Activities
+- Reports
+- Profile
+
+Desktop navigation:
+
+- Sidebar
+- Dashboard
+- Activities
+- Reports
+- Team
+- Settings
+
+## DEVELOPMENT RULES
+
+1. Start by creating the project structure.
+2. Set up Firebase configuration.
+3. Build authentication before other features.
+4. Build user profiles and roles.
+5. Implement activity recording.
+6. Integrate Cloudinary.
+7. Implement PDF generation with embedded images.
+8. Build manager dashboard.
+9. Implement Firestore security rules.
+10. Test mobile and desktop.
+11. Deploy to Firebase Hosting.
+
+Write clean, reusable, maintainable code.
+
+Do not use fake backend functionality or mock data in production features.
+
+Do not leave buttons without working functionality.
+
+Do not expose secrets in frontend code.
+
+Before finishing each development stage, test the functionality and fix errors.
+
+Start with Stage 1 and explain the setup instructions before proceeding to the next stage.
+
+# 13. My additional recommendations
+
+There are five features I would add because they can make your daily reporting much easier.
+
+| Feature          | Benefit                            |
+| ---------------- | ---------------------------------- |
+| Auto-save        | Prevent losing notes while working |
+| Draft recovery   | Continue unfinished activities     |
+| Daily reminder   | Remind employees to submit reports |
+| Report templates | Reuse common activity descriptions |
+| Monthly report   | See total work activities by month |
+
+One more important feature: Quick Capture Mode.
+
+Instead of opening a long form every time you take a picture, the user can:
+
+1. Open the website.
+2. Tap the big camera button.
+3. Take a picture.
+4. Enter a short description.
+5. Save.
+
+This is especially useful when you have many tasks during the day.
+
+Also, because you may sometimes work without a reliable internet connection, let employees save notes locally and synchronize them later. Keep a visible upload status for photos that haven't reached Cloudinary yet.
+
+# 14. Let's decide the final system configuration
+
+I have a few important questions before we start building the actual software.
+
+1\. What name do you want for the software?
+
+2\. How should employees access reports?
+
+All employees belong to one company and can be assigned to managers.
+
+Each employee has completely private reports, visible only to their manager.
+
+3\. When should employees submit reports?
+
+Every day before leaving work.
+
+Anytime they want.
+
+Save throughout the day and submit at the end.
+
+4\. How should the camera work?
+
+Camera only.
+
+Gallery only.
+
+Both camera and gallery.
+
+5\. What PDF language do you want?
+
+English only.
+
+Khmer only.
+
+Both Khmer and English.
+
+6\. Do you want a company logo and company information on the PDF?
+
+Yes, customizable company information.
+
+No, employee report only.
+
+Submit project requirements&#x20;
+
+My recommendation is to finish the requirements first, then build the actual working software starting with the login page, dashboard and mobile interface.
+
+You won't need to build a native app or pay for an app-store publishing process. Firebase Hosting can publish the web application and provide HTTPS for your PWA.&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://firebase.google.com\&sz=32)
+
+Firebase
+
+
+
+I can also remind you tomorrow to continue building this project if you want.
+
+💻Remind me to continue DailyWorkTap to set up

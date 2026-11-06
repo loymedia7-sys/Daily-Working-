@@ -1,0 +1,339 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Primitive Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isBootstrappedAdmin() {
+      return isVerified() && request.auth.token.email == 'loymedia7@gmail.com';
+    }
+
+    // Single-document admin lookup (never called in allow list to prevent O(n) read costs)
+    function isAdmin() {
+      return isBootstrappedAdmin() || (
+        isVerified() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+
+    // 1. Validation Blueprint: UserProfile (/users/{userId})
+    function isValidUserProfile(data) {
+      return data.keys().hasAll([
+        'uid', 'fullName', 'photoURL', 'position', 'department',
+        'role', 'managerId', 'managerName', 'language', 'companyName',
+        'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'uid', 'fullName', 'photoURL', 'position', 'department',
+        'role', 'managerId', 'managerName', 'language', 'companyName',
+        'createdAt', 'updatedAt'
+      ]) &&
+      data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.fullName is string && data.fullName.size() >= 1 && data.fullName.size() <= 100 &&
+      data.photoURL is string && data.photoURL.size() <= 1000 &&
+      data.position is string && data.position.size() >= 1 && data.position.size() <= 100 &&
+      data.department is string && data.department.size() >= 1 && data.department.size() <= 100 &&
+      data.role is string && data.role.size() <= 20 && data.role in ['employee', 'manager', 'admin'] &&
+      data.managerId is string && data.managerId.size() <= 128 &&
+      data.managerName is string && data.managerName.size() <= 100 &&
+      data.language is string && data.language.size() <= 10 && data.language in ['en', 'km'] &&
+      data.companyName is string && data.companyName.size() <= 120 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 2. Validation Blueprint: UserPrivate (/userPrivate/{userId})
+    function isValidUserPrivate(data) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt', 'updatedAt']) &&
+      data.keys().hasOnly(['uid', 'email', 'createdAt', 'updatedAt']) &&
+      data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.email is string && data.email.size() >= 3 && data.email.size() <= 150 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 3. Validation Blueprint: Activity (/activities/{activityId})
+    function isValidActivity(data) {
+      return data.keys().hasAll([
+        'userId', 'userName', 'userDepartment', 'managerId',
+        'title', 'category', 'description', 'result',
+        'startTime', 'endTime', 'status', 'photos',
+        'workDate', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'userId', 'userName', 'userDepartment', 'managerId',
+        'title', 'category', 'description', 'result',
+        'startTime', 'endTime', 'status', 'photos',
+        'workDate', 'createdAt', 'updatedAt'
+      ]) &&
+      data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 && data.userId.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 100 &&
+      data.userDepartment is string && data.userDepartment.size() <= 100 &&
+      data.managerId is string && data.managerId.size() <= 128 &&
+      data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+      data.category is string && data.category.size() >= 1 && data.category.size() <= 80 &&
+      data.description is string && data.description.size() <= 2000 &&
+      data.result is string && data.result.size() <= 1000 &&
+      data.startTime is string && data.startTime.size() >= 1 && data.startTime.size() <= 40 &&
+      data.endTime is string && data.endTime.size() <= 40 &&
+      data.status is string && data.status.size() <= 30 && data.status in ['in_progress', 'completed'] &&
+      data.photos is list && data.photos.size() <= 5 &&
+      (data.photos.size() == 0 || (data.photos[0] is string && data.photos[0].size() <= 350000)) &&
+      data.workDate is string && data.workDate.size() >= 8 && data.workDate.size() <= 20 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 4. Validation Blueprint: DailyReport (/dailyReports/{reportId})
+    function isValidDailyReport(data) {
+      return data.keys().hasAll([
+        'userId', 'userName', 'userPosition', 'userDepartment',
+        'managerId', 'managerName', 'workDate', 'activityIds',
+        'totalActivities', 'totalPhotos', 'workingHours',
+        'summary', 'status', 'managerComment', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'userId', 'userName', 'userPosition', 'userDepartment',
+        'managerId', 'managerName', 'workDate', 'activityIds',
+        'totalActivities', 'totalPhotos', 'workingHours',
+        'summary', 'status', 'managerComment', 'createdAt', 'updatedAt'
+      ]) &&
+      data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 && data.userId.matches('^[a-zA-Z0-9_\\-]+$') &&
+      data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 100 &&
+      data.userPosition is string && data.userPosition.size() <= 100 &&
+      data.userDepartment is string && data.userDepartment.size() <= 100 &&
+      data.managerId is string && data.managerId.size() <= 128 &&
+      data.managerName is string && data.managerName.size() <= 100 &&
+      data.workDate is string && data.workDate.size() >= 8 && data.workDate.size() <= 20 &&
+      data.activityIds is list && data.activityIds.size() <= 50 &&
+      (data.activityIds.size() == 0 || (data.activityIds[0] is string && data.activityIds[0].size() <= 128)) &&
+      data.totalActivities is number && data.totalActivities >= 0 && data.totalActivities <= 100 &&
+      data.totalPhotos is number && data.totalPhotos >= 0 && data.totalPhotos <= 500 &&
+      data.workingHours is number && data.workingHours >= 0 && data.workingHours <= 24 &&
+      data.summary is string && data.summary.size() <= 2000 &&
+      data.status is string && data.status.size() <= 30 && data.status in ['draft', 'submitted', 'approved', 'revision_requested'] &&
+      data.managerComment is string && data.managerComment.size() <= 1000 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // 5. Validation Blueprint: Department (/departments/{departmentId})
+    function isValidDepartment(data) {
+      return data.keys().hasAll([
+        'name', 'nameKm', 'managerId', 'managerName',
+        'createdBy', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'name', 'nameKm', 'managerId', 'managerName',
+        'createdBy', 'createdAt', 'updatedAt'
+      ]) &&
+      data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+      data.nameKm is string && data.nameKm.size() <= 100 &&
+      data.managerId is string && data.managerId.size() <= 128 &&
+      data.managerName is string && data.managerName.size() <= 100 &&
+      data.createdBy is string && data.createdBy.size() >= 1 && data.createdBy.size() <= 128 &&
+      data.createdAt is timestamp &&
+      data.updatedAt is timestamp;
+    }
+
+    // Collection: /users/{userId} (PII-free work profile directory)
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && (
+        isOwner(userId) ||
+        resource.data.managerId == request.auth.uid ||
+        resource.data.role in ['employee', 'manager', 'admin'] ||
+        isAdmin()
+      );
+      allow list: if isSignedIn() && (
+        resource.data.uid == request.auth.uid ||
+        resource.data.managerId == request.auth.uid ||
+        resource.data.role in ['employee', 'manager', 'admin'] ||
+        isBootstrappedAdmin()
+      );
+      allow create: if isVerified() && isValidId(userId) && isOwner(userId) &&
+        isValidUserProfile(incoming()) &&
+        incoming().uid == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        (incoming().role == 'employee' || (isBootstrappedAdmin() && incoming().role == 'admin'));
+
+      allow update: if isVerified() && isValidId(userId) && isValidUserProfile(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Tier 1: Owner updating own non-RBAC profile fields
+          (isOwner(userId) &&
+            incoming().role == existing().role &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'fullName', 'photoURL', 'position', 'department',
+              'managerId', 'managerName', 'language', 'companyName', 'updatedAt'
+            ])
+          ) ||
+          // Tier 2: Admin managing user role, department, and manager assignment
+          isAdmin()
+        );
+
+      allow delete: if isVerified() && isValidId(userId) && isAdmin();
+    }
+
+    // Collection: /userPrivate/{userId} (Strictly isolated PII)
+    match /userPrivate/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isSignedIn() && (resource.data.uid == request.auth.uid || isBootstrappedAdmin());
+      allow create: if isVerified() && isValidId(userId) && isOwner(userId) &&
+        isValidUserPrivate(incoming()) &&
+        incoming().uid == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isVerified() && isValidId(userId) && isValidUserPrivate(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['email', 'updatedAt'])) ||
+          isAdmin()
+        );
+      allow delete: if isVerified() && isValidId(userId) && isAdmin();
+    }
+
+    // Collection: /activities/{activityId}
+    match /activities/{activityId} {
+      allow get: if isSignedIn() && isValidId(activityId) && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.managerId == request.auth.uid ||
+        isAdmin()
+      );
+      allow list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.managerId == request.auth.uid ||
+        isBootstrappedAdmin()
+      );
+      allow create: if isVerified() && isValidId(activityId) &&
+        isValidActivity(incoming()) &&
+        incoming().userId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+
+      allow update: if isVerified() && isValidId(activityId) &&
+        isValidActivity(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          (existing().userId == request.auth.uid &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'title', 'category', 'description', 'result',
+              'startTime', 'endTime', 'status', 'photos',
+              'workDate', 'managerId', 'userName', 'userDepartment', 'updatedAt'
+            ])
+          ) ||
+          isAdmin()
+        );
+
+      allow delete: if isVerified() && isValidId(activityId) && (
+        existing().userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+
+    // Collection: /dailyReports/{reportId}
+    match /dailyReports/{reportId} {
+      allow get: if isSignedIn() && isValidId(reportId) && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.managerId == request.auth.uid ||
+        isAdmin()
+      );
+      allow list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.managerId == request.auth.uid ||
+        isBootstrappedAdmin()
+      );
+      allow create: if isVerified() && isValidId(reportId) &&
+        isValidDailyReport(incoming()) &&
+        incoming().userId == request.auth.uid &&
+        incoming().status in ['draft', 'submitted'] &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+
+      allow update: if isVerified() && isValidId(reportId) &&
+        isValidDailyReport(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Employee updating draft or resubmitting revision_requested report (Terminal state locked if approved)
+          (existing().userId == request.auth.uid &&
+            existing().status in ['draft', 'revision_requested', 'submitted'] &&
+            incoming().status in ['draft', 'submitted'] &&
+            incoming().managerComment == existing().managerComment &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'activityIds', 'totalActivities', 'totalPhotos', 'workingHours',
+              'summary', 'status', 'managerId', 'managerName',
+              'userName', 'userPosition', 'userDepartment', 'updatedAt'
+            ])
+          ) ||
+          // Action 2: Assigned Manager approving or requesting revision (Terminal state locked once approved)
+          (existing().managerId == request.auth.uid &&
+            existing().status != 'approved' &&
+            incoming().status in ['approved', 'revision_requested'] &&
+            incoming().diff(existing()).affectedKeys().hasOnly([
+              'status', 'managerComment', 'updatedAt'
+            ])
+          ) ||
+          // Action 3: Admin override
+          isAdmin()
+        );
+
+      allow delete: if isVerified() && isValidId(reportId) && (
+        (existing().userId == request.auth.uid && existing().status == 'draft') ||
+        isAdmin()
+      );
+    }
+
+    // Collection: /departments/{departmentId}
+    match /departments/{departmentId} {
+      allow get: if isSignedIn() && isValidId(departmentId);
+      allow list: if isSignedIn() && resource.data.name is string;
+      allow create: if isVerified() && isValidId(departmentId) &&
+        isValidDepartment(incoming()) &&
+        incoming().createdBy == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+      allow update: if isVerified() && isValidId(departmentId) &&
+        isValidDepartment(incoming()) &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+      allow delete: if isVerified() && isValidId(departmentId) && isAdmin();
+    }
+  }
+}
